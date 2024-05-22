@@ -7,5 +7,11 @@
         Task<HttpResponseWrapper<object>> PostAsync<T>(string url, T model);
 
         Task<HttpResponseWrapper<TActionResponce>> PostAsync<T, TActionResponce>(string url, T model);
+
+        Task<HttpResponseWrapper<object>> DeleteAsync<T>(string url);
+
+        Task<HttpResponseWrapper<object>> PutAsync<T>(string url, T model);
+
+        Task<HttpResponseWrapper<TActionResponce>> PutAsync<T, TActionResponce>(string url, T model);
     }
 }
