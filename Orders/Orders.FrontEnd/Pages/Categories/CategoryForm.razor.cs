@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Routing;
 using Orders.Shared.Entities;
 
-namespace Orders.FrontEnd.Pages.Countries
+namespace Orders.FrontEnd.Pages.Categories
 {
-    public partial class CountryForm
+    public partial class CategoryForm
     {
         private EditContext editContext = null!;
-        [EditorRequired, Parameter] public Country Country { get; set; } = null!;
+
+        [EditorRequired, Parameter] public Category Category { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnvalidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
@@ -17,7 +18,7 @@ namespace Orders.FrontEnd.Pages.Countries
 
         protected override void OnInitialized()
         {
-            editContext = new(Country);
+            editContext = new(Category);
         }
 
         private async Task OnBeforeInternalNavigation(LocationChangingContext context)
@@ -43,6 +44,7 @@ namespace Orders.FrontEnd.Pages.Countries
             }
 
             context.PreventNavigation();
+
         }
     }
 }

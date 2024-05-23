@@ -4,14 +4,14 @@ using Orders.FrontEnd.Repositories;
 using Orders.Shared.Entities;
 using System.Net;
 
-namespace Orders.FrontEnd.Pages.Countries
+namespace Orders.FrontEnd.Pages.Categories
 {
-    public partial class CountriesIndex
+    public partial class CategoriesIndex
     {
         [Inject] private IRepository Repositry { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-        public List<Country>? Countries { get; set; }
+        public List<Category>? Categories { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,22 +20,22 @@ namespace Orders.FrontEnd.Pages.Countries
 
         private async Task LoadAsync()
         {
-            var responseHttp = await Repositry.GetAsync<List<Country>>("api/v1/countries");
+            var responseHttp = await Repositry.GetAsync<List<Category>>("api/v1/categories");
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-            Countries = responseHttp.Response;
+            Categories = responseHttp.Response;
         }
 
-        private async Task DeleteAsync(Country country)
+        private async Task DeleteAsync(Category category)
         {
             var result = await SweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Confirmación",
-                Text = $"¿Estas seguro de querer borrar el país: {country.Name}?",
+                Text = $"¿Estas seguro de querer borrar la categoría: {category.Name}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
             });
@@ -46,12 +46,12 @@ namespace Orders.FrontEnd.Pages.Countries
                 return;
             }
 
-            var responseHttp = await Repositry.DeleteAsync<Country>($"api/v1/countries/{country.Id}");
+            var responseHttp = await Repositry.DeleteAsync<Category>($"api/v1/categories/{category.Id}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
-                    NavigationManager.NavigateTo("/countries");
+                    NavigationManager.NavigateTo("/categories");
                 }
                 else
                 {

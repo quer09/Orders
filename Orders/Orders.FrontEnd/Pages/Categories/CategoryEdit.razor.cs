@@ -1,15 +1,16 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
+using Orders.FrontEnd.Pages.Countries;
 using Orders.FrontEnd.Repositories;
 using Orders.Shared.Entities;
 using System.Net;
 
-namespace Orders.FrontEnd.Pages.Countries
+namespace Orders.FrontEnd.Pages.Categories
 {
-    public partial class CountryEdit
+    public partial class CategoryEdit
     {
-        private Country? country;
-        private CountryForm? countryForm;
+        private Category? category;
+        private CategoryForm? categoryForm;
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -17,12 +18,12 @@ namespace Orders.FrontEnd.Pages.Countries
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<Country>($"api/v1/countries/{Id}");
+            var responseHttp = await Repository.GetAsync<Category>($"api/v1/categories/{Id}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
-                    NavigationManager.NavigateTo("/countries");
+                    NavigationManager.NavigateTo("/categories");
                 }
                 else
                 {
@@ -32,13 +33,13 @@ namespace Orders.FrontEnd.Pages.Countries
             }
             else
             {
-                country = responseHttp.Response;
+                category = responseHttp.Response;
             }
         }
 
         private async Task EditAsync()
         {
-            var responseHttp = await Repository.PutAsync("api/v1/countries", country);
+            var responseHttp = await Repository.PutAsync("api/v1/categories", category);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -58,8 +59,8 @@ namespace Orders.FrontEnd.Pages.Countries
 
         private void Return()
         {
-            countryForm!.FormPostedSuccessfully = true;
-            NavigationManager.NavigateTo("/countries");
+            categoryForm!.FormPostedSuccessfully = true;
+            NavigationManager.NavigateTo("/categories");
         }
     }
 }
