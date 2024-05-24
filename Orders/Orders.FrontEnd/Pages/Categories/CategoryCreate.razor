@@ -2,4 +2,4 @@
 
 <h3>Crear Categoría</h3>
 
-<CategoryForm @ref="categoryForm" Category="category" OnvalidSubmit="CreateAsync" ReturnAction="Return" />
+<FormWithName @ref="categoryForm" Label="Categoría:" Model="category" OnvalidSubmit="CreateAsync" ReturnAction="Return" />
