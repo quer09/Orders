@@ -60,9 +60,8 @@ namespace Orders.BackEnd.Repositories.Implementations
                     WasSuccess = true
                 };
             }
-            catch 
+            catch
             {
-
                 return new ActionResponse<T>
                 {
                     WasSuccess = false,
@@ -73,7 +72,6 @@ namespace Orders.BackEnd.Repositories.Implementations
 
         public virtual async Task<ActionResponse<T>> GetAsync(int id)
         {
-
             var row = await _entity.FindAsync(id);
             if (row == null)
             {

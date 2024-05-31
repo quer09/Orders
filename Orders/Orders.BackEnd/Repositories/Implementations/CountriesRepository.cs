@@ -22,7 +22,7 @@ namespace Orders.BackEnd.Repositories.Implementations
                 .ThenInclude(s => s.Cities)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if(country == null)
+            if (country == null)
             {
                 return new ActionResponse<Country>
                 {
