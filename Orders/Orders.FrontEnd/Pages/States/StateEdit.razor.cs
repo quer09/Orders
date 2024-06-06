@@ -3,22 +3,38 @@ using Microsoft.AspNetCore.Components;
 using Orders.FrontEnd.Repositories;
 using Orders.FrontEnd.Shared;
 using Orders.Shared.Entities;
+using System.Net;
 
 namespace Orders.FrontEnd.Pages.States
 {
-    public partial class StateCreate
+    public partial class StateEdit
     {
-        private State state = new();
+        private State? state;
         private FormWithName<State>? stateForm;
-        [Parameter] public int CountryId { get; set; }
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+        [EditorRequired, Parameter] public int StateId { get; set; }
 
-        private async Task CreateAsync()
+        protected override async Task OnParametersSetAsync()
         {
-            state.CountryId = CountryId;
-            var responseHttp = await Repository.PostAsync("/api/v1/states", state);
+            var responseHttp = await Repository.GetAsync<State>($"/api/v1/states/{StateId}");
+            if (responseHttp.Error)
+            {
+                if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Return();
+                }
+                var messge = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", messge, SweetAlertIcon.Error);
+                return;
+            }
+            state = responseHttp.Response;
+        }
+
+        public async Task SaveAsync()
+        {
+            var responseHttp = await Repository.PutAsync($"/api/v1/states", state);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -33,13 +49,13 @@ namespace Orders.FrontEnd.Pages.States
                 ShowConfirmButton = true,
                 Timer = 3000
             });
-            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro creado con éxito.");
+            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Cambios guardados con éxito.");
         }
 
         private void Return()
         {
             stateForm!.FormPostedSuccessfully = true;
-            NavigationManager.NavigateTo($"/countries/details/{CountryId}");
+            NavigationManager.NavigateTo($"/countries/details/{state!.CountryId}");
         }
     }
 }

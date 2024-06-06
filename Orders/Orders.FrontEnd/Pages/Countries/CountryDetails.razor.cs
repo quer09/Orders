@@ -14,7 +14,7 @@ namespace Orders.FrontEnd.Pages.Countries
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Parameter] public int CountryId { get; set; }
 
-        protected async override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadAsync();
         }
