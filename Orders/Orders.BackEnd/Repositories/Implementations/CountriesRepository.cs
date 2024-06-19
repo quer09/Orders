@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Orders.BackEnd.Data;
+using Orders.BackEnd.Helpers;
 using Orders.BackEnd.Repositories.Interfaces;
+using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
 using Orders.Shared.Responses;
 
@@ -41,12 +43,28 @@ namespace Orders.BackEnd.Repositories.Implementations
         public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync()
         {
             var countries = await _context.Countries
-                .Include(c => c.States)
+                .OrderBy(x => x.Name)
                 .ToListAsync();
             return new ActionResponse<IEnumerable<Country>>
             {
                 WasSuccess = true,
                 Result = countries
+            };
+        }
+
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Countries
+                .Include(c => c.States)
+                .AsQueryable();
+
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
             };
         }
     }
