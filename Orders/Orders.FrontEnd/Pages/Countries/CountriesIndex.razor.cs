@@ -8,7 +8,9 @@ namespace Orders.FrontEnd.Pages.Countries
 {
     public partial class CountriesIndex
     {
-        [Inject] private IRepository Repositry { get; set; } = null!;
+        private int currentPage = 1;
+        private int totalPages;
+        [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         public List<Country>? Countries { get; set; }
@@ -18,16 +20,44 @@ namespace Orders.FrontEnd.Pages.Countries
             await LoadAsync();
         }
 
-        private async Task LoadAsync()
+        private async Task SelectedPageAsync(int page)
         {
-            var responseHttp = await Repositry.GetAsync<List<Country>>("api/v1/countries");
+            currentPage = page;
+            await LoadAsync(page);
+        }
+
+        private async Task LoadAsync(int page = 1)
+        {
+            var ok = await LoadListAsync(page);
+            if(ok)
+            {
+                await LoadPagesAsync();
+            }
+        }
+
+        private async Task<bool> LoadListAsync(int page)
+        {
+            var responseHttp = await Repository.GetAsync<List<Country>>($"api/v1/countries?page={page}");
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return false;
+            }
+            Countries = responseHttp.Response;
+            return true;
+        }
+
+        private async Task LoadPagesAsync()
+        {
+            var responseHttp = await Repository.GetAsync<int>("api/v1/countries/totalPages");
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-            Countries = responseHttp.Response;
+            totalPages = responseHttp.Response;
         }
 
         private async Task DeleteAsync(Country country)
@@ -46,7 +76,7 @@ namespace Orders.FrontEnd.Pages.Countries
                 return;
             }
 
-            var responseHttp = await Repositry.DeleteAsync<Country>($"api/v1/countries/{country.Id}");
+            var responseHttp = await Repository.DeleteAsync<Country>($"api/v1/countries/{country.Id}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)

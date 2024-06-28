@@ -13,17 +13,21 @@ else
     </div>
 
     <h4>Cuidades</h4>
-    <GenericList MyList="state.Cities!.ToList()">
+    <GenericList MyList="cities!">
         <Body>
+            <Pagination CurrentPage="currentPage"
+                        TotalPages="totalPages"
+                        SelectedPage="SelectedPageAsync" />
+
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <td>Cuidad</td>
-                        <td></td>
+                        <th>Cuidad</th>
+                        <th class="th-table3"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var city in state.Cities!)
+                    @foreach (var city in cities!)
                     {
                         <tr>
                             <td>@city.Name</td>
