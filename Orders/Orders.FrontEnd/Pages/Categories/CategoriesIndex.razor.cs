@@ -14,6 +14,8 @@ namespace Orders.FrontEnd.Pages.Categories
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         public List<Category>? Categories { get; set; }
+        [Parameter, SupplyParameterFromQuery] public string Page { get; set; } = string.Empty;
+        [Parameter, SupplyParameterFromQuery] public string Filter { get; set; } = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
@@ -22,6 +24,11 @@ namespace Orders.FrontEnd.Pages.Categories
 
         private async Task SelectedPageAsync(int page)
         {
+            if (!string.IsNullOrEmpty(Page))
+            {
+                page = Convert.ToInt32(Page);
+            }
+
             currentPage = page;
             await LoadAsync(page);
         }
@@ -37,7 +44,13 @@ namespace Orders.FrontEnd.Pages.Categories
 
         private async Task<bool> LoadListAsync(int page)
         {
-            var responseHttp = await Repositry.GetAsync<List<Category>>($"api/v1/categories?page={page}");
+            var url = $"api/v1/categories?page={page}";
+            if (!string.IsNullOrEmpty(Filter))
+            {
+                url += $"&filter={Filter}";
+            }
+
+            var responseHttp = await Repositry.GetAsync<List<Category>>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -50,7 +63,13 @@ namespace Orders.FrontEnd.Pages.Categories
 
         private async Task LoadPagesAsync()
         {
-            var responseHttp = await Repositry.GetAsync<int>("api/v1/categories/totalPages");
+            var url = "api/v1/categories/totalPages";
+            if (!string.IsNullOrEmpty(Filter))
+            {
+                url += $"?filter={Filter}";
+            }
+
+            var responseHttp = await Repositry.GetAsync<int>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -58,6 +77,19 @@ namespace Orders.FrontEnd.Pages.Categories
                 return;
             }
             totalPages = responseHttp.Response;
+        }
+
+        private async Task CleanFilterAsycn()
+        {
+            Filter = string.Empty;
+            await ApplyFilterAsync();
+        }
+
+        private async Task ApplyFilterAsync()
+        {
+            int page = 1;
+            await LoadAsync(page);
+            await SelectedPageAsync(page);
         }
 
         private async Task DeleteAsync(Category category)

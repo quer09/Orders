@@ -16,6 +16,8 @@ namespace Orders.FrontEnd.Pages.Countries
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Parameter] public int CountryId { get; set; }
+        [Parameter, SupplyParameterFromQuery] public string Page { get; set; } = string.Empty;
+        [Parameter, SupplyParameterFromQuery] public string Filter { get; set; } = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
@@ -24,6 +26,11 @@ namespace Orders.FrontEnd.Pages.Countries
 
         private async Task SelectedPageAsync(int page)
         {
+            if (!string.IsNullOrEmpty(Page))
+            {
+                page = Convert.ToInt32(Page);
+            }
+
             currentPage = page;
             await LoadAsync(page);
         }
@@ -43,7 +50,13 @@ namespace Orders.FrontEnd.Pages.Countries
 
         private async Task LoadPagesAsync()
         {
-            var responseHttp = await Repository.GetAsync<int>($"api/v1/states/totalPages?id={CountryId}");
+            var url = $"api/v1/states/totalPages?id={CountryId}";
+            if (!string.IsNullOrEmpty(Filter))
+            {
+                url += $"&filter={Filter}";
+            }
+
+            var responseHttp = await Repository.GetAsync<int>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -55,7 +68,13 @@ namespace Orders.FrontEnd.Pages.Countries
 
         private async Task<bool> LoadStatesAsync(int page)
         {
-            var responseHttp = await Repository.GetAsync<List<State>>($"api/v1/states?id={CountryId}&page={page}");
+            var url = $"api/v1/states?id={CountryId}&page={page}";
+            if (!string.IsNullOrEmpty(Filter))
+            {
+                url += $"&filter={Filter}";
+            }
+
+            var responseHttp = await Repository.GetAsync<List<State>>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -64,6 +83,19 @@ namespace Orders.FrontEnd.Pages.Countries
             }
             states = responseHttp.Response;
             return true;
+        }
+
+        private async Task CleanFilterAsycn()
+        {
+            Filter = string.Empty;
+            await ApplyFilterAsync();
+        }
+
+        private async Task ApplyFilterAsync()
+        {
+            int page = 1;
+            await LoadAsync(page);
+            await SelectedPageAsync(page);
         }
 
         private async Task<bool> LoadCountryAsync()

@@ -13,6 +13,12 @@
                     TotalPages="totalPages"
                     SelectedPage="SelectedPageAsync" />
 
+        <div class="filter-div">
+            <input class="form-control" type="text" id="titulo" placeholder="Buscar categoria..." @bind-value="Filter" />
+            <button type="button" class="btn btn-outline-primary mx-1" @onclick="ApplyFilterAsync">Filtrar</button>
+            <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsycn">Limpiar</button>
+        </div>
+
         <table class="table table-striped">
             <thead>
                 <tr>
