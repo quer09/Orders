@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Orders.BackEnd.Repositories.Interfaces;
 using Orders.BackEnd.UnitsOfWork.Interfaces;
+using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
 
 namespace Orders.BackEnd.UnitsOfWork.Implementations
@@ -23,5 +24,9 @@ namespace Orders.BackEnd.UnitsOfWork.Implementations
         public async Task<User> GetUserAsync(string email) => await _userRepository.GetUserAsync(email);
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName) => await _userRepository.IsUserInRoleAsync(user, roleName);
+
+        public async Task<SignInResult> LoginAsync(LoginDTO model) => await _userRepository.LoginAsync(model);
+
+        public async Task LogoutAsync() => await _userRepository.LogoutAsync();
     }
 }
