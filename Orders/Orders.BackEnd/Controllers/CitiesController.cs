@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Orders.BackEnd.UnitsOfWork.Implementations;
 using Orders.BackEnd.UnitsOfWork.Interfaces;
 using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
@@ -18,6 +17,13 @@ namespace Orders.BackEnd.Controllers
         public CitiesController(IGenericUnitOfWork<City> unitOfWork, ICitiesUnitOfWork citiesUnitOfWork) : base(unitOfWork)
         {
             _citiesUnitOfWork = citiesUnitOfWork;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("combo/{stateId:int}")]
+        public async Task<IActionResult> GetComboAsync(int stateId)
+        {
+            return Ok(await _citiesUnitOfWork.GetComboAsync(stateId));
         }
 
         [HttpGet]
