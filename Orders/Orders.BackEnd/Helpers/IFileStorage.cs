@@ -1,0 +1,19 @@
+﻿namespace Orders.BackEnd.Helpers
+{
+    public interface IFileStorage
+    {
+        Task<string> SaveFileAsync(byte[] content, string extension, string containerName);
+
+        Task RemoveFileAsync(string path, string containerName);
+
+        async Task<string> EditFileAsync(byte[] content, string extension, string containerName, string path)
+        {
+            if (path is not null)
+            {
+                await RemoveFileAsync(path, containerName);
+            }
+
+            return await SaveFileAsync(content, extension, containerName);
+        }
+    }
+}

@@ -107,11 +107,11 @@ code {
 }
 
 .th-table2 {
-    width: 90px;
+    width: 168px;
 }
 
 .th-table3 {
-    width: 140px;
+    width: 90px;
 }
 
 .pagination-cursor {
@@ -126,4 +126,16 @@ code {
 
 .filter-div input {
     width: 400px;
+}
+
+.div-imageBs64 {
+    margin: 10px;
+}
+
+.imageBs64 {
+    width: 400px;
+}
+
+.imageUser {
+    border-radius: 50%;
 }

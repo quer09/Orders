@@ -6,45 +6,50 @@
 }
 else
 {
-    <h3>@state.Name</h3>
-    <div class="mb-2">
-        <a class="btn btn-primary" href="/cities/create/@StateId"> Nueva cuidad</a>
-        <a class="btn btn-success" href="/countries/details/@state.CountryId">Regresar</a>
+
+    <div class="card">
+        <div class="card-header">
+            <span>
+                <i class="bi bi-globe-americas" /> @state.Name
+                <a class="btn btn-primary float-end mx-1" href="/cities/create/@StateId"><i class="bi bi-plus-square" /> Adicionar Cuidad</a>
+                <a class="btn btn-success float-end" href="/countries/details/@state.CountryId"><i class="bi bi-arrow-left" /> Regresar</a>
+            </span>
+        </div>
+        <div class="card-body">
+            <GenericList MyList="cities!">
+                <Body>
+                    <div class="filter-div">
+                        <input class="form-control" type="text" id="titulo" placeholder="Buscar cuidad..." @bind-value="Filter" />
+                        <button type="button" class="btn btn-outline-primary mx-1" @onclick="ApplyFilterAsync"><i class="bi bi-funnel" /> Filtrar</button>
+                        <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsycn"><i class="bi bi-x-circle" /> Limpiar</button>
+                    </div>
+
+                    <Pagination CurrentPage="currentPage"
+                                TotalPages="totalPages"
+                                SelectedPage="SelectedPageAsync" />
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Cuidad</th>
+                                <th class="th-table2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var city in cities!)
+                            {
+                                <tr>
+                                    <td>@city.Name</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning" href="/cities/edit/@city.Id"><i class="bi bi-pencil" /> Editar</a>
+                                        <button class="btn btn-sm btn-danger" @onclick="(() => DeleteAsync(city))"><i class="bi bi-trash" /> Borrar</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </Body>
+            </GenericList>
+        </div>
     </div>
-
-    <h4>Cuidades</h4>
-    <GenericList MyList="cities!">
-        <Body>
-            <Pagination CurrentPage="currentPage"
-                        TotalPages="totalPages"
-                        SelectedPage="SelectedPageAsync" />
-
-            <div class="filter-div">
-                <input class="form-control" type="text" id="titulo" placeholder="Buscar cuidad..." @bind-value="Filter" />
-                <button type="button" class="btn btn-outline-primary mx-1" @onclick="ApplyFilterAsync">Filtrar</button>
-                <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsycn">Limpiar</button>
-            </div>
-
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Cuidad</th>
-                        <th class="th-table3"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var city in cities!)
-                    {
-                        <tr>
-                            <td>@city.Name</td>
-                            <td>
-                                <a class="btn btn-sm btn-warning" href="/cities/edit/@city.Id">Editar</a>
-                                <button class="btn btn-sm btn-danger" @onclick="(() => DeleteAsync(city))">Borrar</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </Body>
-    </GenericList>
 }
