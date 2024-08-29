@@ -15,6 +15,10 @@ namespace Orders.BackEnd.UnitsOfWork.Implementations
             _userRepository = userRepository;
         }
 
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword) => await _userRepository.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        public async Task<IdentityResult> UpdateUserAsync(User user) => await _userRepository.UpdateUserAsync(user);
+
         public async Task<IdentityResult> AddUserAsync(User user, string password) => await _userRepository.AddUserAsync(user, password);
 
         public async Task AddUserToRoleAsync(User user, string roleName) => await _userRepository.AddUserToRoleAsync(user, roleName);
@@ -22,6 +26,8 @@ namespace Orders.BackEnd.UnitsOfWork.Implementations
         public async Task CheckRoleAsync(string roleName) => await _userRepository.CheckRoleAsync(roleName);
 
         public async Task<User> GetUserAsync(string email) => await _userRepository.GetUserAsync(email);
+
+        public async Task<User> GetUserAsync(Guid userId) => await _userRepository.GetUserAsync(userId);
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName) => await _userRepository.IsUserInRoleAsync(user, roleName);
 
