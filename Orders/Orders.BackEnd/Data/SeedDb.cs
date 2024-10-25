@@ -1,4 +1,5 @@
-﻿using Orders.BackEnd.UnitsOfWork.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Orders.BackEnd.UnitsOfWork.Interfaces;
 using Orders.Shared.Entities;
 using Orders.Shared.Enums;
 
@@ -18,10 +19,20 @@ namespace Orders.BackEnd.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+            await CheckCountriesFullAsync();
             await CheckCountriesAsync();
             await CheckCategoriesAsync();
             await CheckRolesAsync();
             await CheckUserAsync("1010", "Quer", "Hidalgo", "quervin.hidalgo@grupopromerica.com", "322 311 4620", "San Juan City", UserType.Admin);
+        }
+
+        private async Task CheckCountriesFullAsync()
+        {
+            if (!_context.Countries.Any())
+            {
+                var contriesStatesCitiesSQLScript = File.ReadAllText("Data\\CountriesStatesCities.sql");
+                await _context.Database.ExecuteSqlRawAsync(contriesStatesCitiesSQLScript);
+            }
         }
 
         private async Task CheckCategoriesAsync()
@@ -128,6 +139,9 @@ namespace Orders.BackEnd.Data
             var user = await _usersUnitOfWork.GetUserAsync(email);
             if (user == null)
             {
+                var city = await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Grecia");
+                city ??= await _context.Cities.FirstOrDefaultAsync();
+
                 user = new User
                 {
                     FirstName = firstName,
@@ -137,12 +151,15 @@ namespace Orders.BackEnd.Data
                     PhoneNumber = phone,
                     Address = address,
                     Document = document,
-                    City = _context.Cities.FirstOrDefault(),
+                    City = city,
                     UserType = userType
                 };
 
                 await _usersUnitOfWork.AddUserAsync(user, "123456");
                 await _usersUnitOfWork.AddUserToRoleAsync(user, userType.ToString());
+
+                var token = await _usersUnitOfWork.GenerateEmailConfirmationTokenAsync(user);
+                await _usersUnitOfWork.ConfirmEmailAsync(user, token);
             }
 
             return user;

@@ -94,7 +94,7 @@ namespace Orders.FrontEnd.Pages.Auth
             userDTO.UserName = userDTO.Email;
             userDTO.UserType = UserType.User;
             loading = true;
-            var responseHtpp = await Repository.PostAsync<UserDTO, TokenDTO>("/api/v1/accounts/reateUser", userDTO);
+            var responseHtpp = await Repository.PostAsync<UserDTO>("/api/v1/accounts/reateUser", userDTO);
             loading = false;
             if (responseHtpp.Error)
             {
@@ -103,7 +103,7 @@ namespace Orders.FrontEnd.Pages.Auth
                 return;
             }
 
-            await LoginService.LoginAsync(responseHtpp.Response!.Token);
+            await SweetAlertService.FireAsync("Confirmation", "Su cuenta ha sido creada con éxito. Se te ha enviado un correo electrónico con las instrucciones para activar tu usuario.", SweetAlertIcon.Info);
             NavigationManager.NavigateTo("/");
         }
     }

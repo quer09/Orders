@@ -2,6 +2,8 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Orders.FrontEnd.Repositories;
+using Orders.FrontEnd.Services;
+using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
 using System.Net;
 
@@ -19,6 +21,7 @@ namespace Orders.FrontEnd.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
+        [Inject] private ILoginService LoginService { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -116,7 +119,7 @@ namespace Orders.FrontEnd.Pages.Auth
 
         private async Task SaveUserAsync()
         {
-            var responseHtpp = await Repository.PutAsync<User>("/api/v1/accounts", user!);
+            var responseHtpp = await Repository.PutAsync<User, TokenDTO>("/api/v1/accounts", user!);
             if (responseHtpp.Error)
             {
                 var message = await responseHtpp.GetErrorMessageAsync();
@@ -124,6 +127,7 @@ namespace Orders.FrontEnd.Pages.Auth
                 return;
             }
 
+            await LoginService.LoginAsync(responseHtpp.Response!.Token);
             NavigationManager.NavigateTo("/");
         }
     }

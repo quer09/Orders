@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Orders.Shared.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Orders.Shared.Entities
 {
-    public class User: IdentityUser
+    public class User : IdentityUser
     {
         [Display(Name = "Documento")]
         [MaxLength(20, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -45,6 +40,5 @@ namespace Orders.Shared.Entities
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
-
     }
 }
