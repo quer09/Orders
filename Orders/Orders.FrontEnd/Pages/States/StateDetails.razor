@@ -16,14 +16,9 @@ else
             </span>
         </div>
         <div class="card-body">
+            <Filter PlaceHolder="Buscar cuidad..." Callback="@FilterCallBack" />
             <GenericList MyList="cities!">
                 <Body>
-                    <div class="filter-div">
-                        <input class="form-control" type="text" id="titulo" placeholder="Buscar cuidad..." @bind-value="Filter" />
-                        <button type="button" class="btn btn-outline-primary mx-1" @onclick="ApplyFilterAsync"><i class="bi bi-funnel" /> Filtrar</button>
-                        <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsycn"><i class="bi bi-x-circle" /> Limpiar</button>
-                    </div>
-
                     <Pagination CurrentPage="currentPage"
                                 TotalPages="totalPages"
                                 SelectedPage="SelectedPageAsync" />

@@ -24,6 +24,12 @@ namespace Orders.FrontEnd.Pages.Countries
             await LoadAsync();
         }
 
+        private async Task FilterCallBack(string filter)
+        {
+            Filter = filter;
+            await ApplyFilterAsync();
+            StateHasChanged();
+        }
         private async Task SelectedPageAsync(int page)
         {
             currentPage = page;
@@ -80,12 +86,6 @@ namespace Orders.FrontEnd.Pages.Countries
                 return;
             }
             totalPages = responseHttp.Response;
-        }
-
-        private async Task CleanFilterAsycn()
-        {
-            Filter = string.Empty;
-            await ApplyFilterAsync();
         }
 
         private async Task ApplyFilterAsync()
