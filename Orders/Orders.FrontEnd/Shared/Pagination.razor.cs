@@ -4,21 +4,33 @@ namespace Orders.FrontEnd.Shared
 {
     public partial class Pagination
     {
-        private List<PageModel> links = null!;
+        private List<PageModel> links = [];
+        private List<OptionModel> options = [];
+        private int selectedOptionValue = 10;
+
         [Parameter] public int CurrentPage { get; set; } = 1;
         [Parameter] public int TotalPages { get; set; } = 1;
         [Parameter] public int Radio { get; set; } = 10;
         [Parameter] public EventCallback<int> SelectedPage { get; set; }
+        [Parameter] public EventCallback<int> RecordsNumber { get; set; }
 
         protected override void OnParametersSet()
         {
-            links = new List<PageModel>();
+            BuildPages();
+            BuildOptions();
+        }
+
+        private void BuildPages()
+        {
+            links = [];
+            var previusLinkEnable = CurrentPage != 1;
+            var previusLinkPage = CurrentPage - 1;
 
             links.Add(new PageModel
             {
                 Text = "Anterior",
-                Page = CurrentPage - 1,
-                Enable = CurrentPage != 1
+                Page = previusLinkPage,
+                Enable = previusLinkEnable
             });
 
             for (int i = 1; i <= TotalPages; i++)
@@ -54,12 +66,35 @@ namespace Orders.FrontEnd.Shared
                 }
             }
 
+            var linkNextEnable = CurrentPage != TotalPages;
+            var linkNextPage = CurrentPage != TotalPages ? CurrentPage + 1 : CurrentPage;
+
             links.Add(new PageModel
             {
                 Text = "Siguiente",
-                Page = CurrentPage != TotalPages ? CurrentPage + 1 : CurrentPage,
-                Enable = CurrentPage != TotalPages
+                Page = linkNextPage,
+                Enable = linkNextEnable
             });
+        }
+
+        private void BuildOptions()
+        {
+            options =
+            [
+                new OptionModel { Value = 10, Name = "10" },
+                new OptionModel { Value = 25, Name = "25" },
+                new OptionModel { Value = 50, Name = "50" },
+                new OptionModel { Value = int.MaxValue, Name = "Todos" },
+            ];
+        }
+
+    private async Task InternalRecordsNumberSelect(ChangeEventArgs e)
+        {
+            if(e.Value != null)
+            {
+                selectedOptionValue = Convert.ToInt32(e.Value.ToString());
+            }
+            await RecordsNumber.InvokeAsync(selectedOptionValue);
         }
 
         private async Task InternalSelectedPage(PageModel pageModel)
@@ -68,8 +103,13 @@ namespace Orders.FrontEnd.Shared
             {
                 return;
             }
-
             await SelectedPage.InvokeAsync(pageModel.Page);
+        }
+
+        private class OptionModel
+        {
+            public string Name { get; set; } = null!;
+            public int Value { get; set; }
         }
 
         private class PageModel
