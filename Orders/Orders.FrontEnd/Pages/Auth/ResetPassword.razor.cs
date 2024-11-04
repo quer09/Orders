@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using Orders.FrontEnd.Repositories;
@@ -13,6 +14,7 @@ namespace Orders.FrontEnd.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
+        [CascadingParameter] private IModalService Modal { get; set; } = default!;
         [Parameter, SupplyParameterFromQuery] public string Token { get; set; } = string.Empty;
 
         private async Task ChangePasswordAsync()
@@ -29,7 +31,7 @@ namespace Orders.FrontEnd.Pages.Auth
             }
 
             await SweetAlertService.FireAsync("Confirmación", "Contraseña cambiada con éxito, ahora puede ingresar con su nueva contraseña.", SweetAlertIcon.Info);
-            NavigationManager.NavigateTo("/Login");
+            Modal.Show<Login>();
         }
     }
 }

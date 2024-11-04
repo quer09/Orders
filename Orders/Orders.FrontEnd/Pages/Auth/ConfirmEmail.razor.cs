@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using Orders.FrontEnd.Repositories;
@@ -11,6 +12,7 @@ namespace Orders.FrontEnd.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
+        [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
         [Parameter, SupplyParameterFromQuery] public string UserId { get; set; } = string.Empty;
         [Parameter, SupplyParameterFromQuery] public string Token { get; set; } = string.Empty;
@@ -27,7 +29,7 @@ namespace Orders.FrontEnd.Pages.Auth
             }
 
             await SweetAlertService.FireAsync("Confimación", "Gracias por confirmar su email, ahora puedes ingresar al sistema.", SweetAlertIcon.Info);
-            NavigationManager.NavigateTo("/");
+            Modal.Show<Login>();
         }
     }
 }

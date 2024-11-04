@@ -4,7 +4,7 @@
     <div class="card-header">
         <span>
             <i class="bi bi-globe-americas" /> Categorias
-            <a class="btn btn-primary float-end mx-1" href="/categories/create"><i class="bi bi-plus-square" /> Adicionar Categoría</a>
+            <a class="btn btn-primary float-end mx-1" @onclick=@(()=> ShowModalAsync())><i class="bi bi-plus-square" /> Adicionar Categoría</a>
         </span>
     </div>
     <div class="card-body">
@@ -13,7 +13,7 @@
             <Body>
                 <Pagination CurrentPage="currentPage"
                             TotalPages="totalPages"
-                            SelectedPage="SelectedPageAsync" 
+                            SelectedPage="SelectedPageAsync"
                             RecordsNumber="SelectedRecordsNumberAsync" />
 
                 <table class="table table-striped">
@@ -30,7 +30,7 @@
                             <tr>
                                 <td>@category.Name</td>
                                 <td>
-                                    <a href="/categories/edit/@category.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil" /> Editar</a>
+                                    <a @onclick=@(()=> ShowModalAsync(category.Id, true)) class="btn btn-sm btn-warning"><i class="bi bi-pencil" /> Editar</a>
                                     <button @onclick=@(() => DeleteAsync(category)) class="btn btn-sm btn-danger"><i class="bi bi-trash" /> Borrar</button>
                                 </td>
                             </tr>
