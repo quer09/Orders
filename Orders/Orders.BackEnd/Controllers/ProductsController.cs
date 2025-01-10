@@ -19,6 +19,28 @@ namespace Orders.BackEnd.Controllers
             _productsUnitOfWork = productsUnitOfWork;
         }
 
+        [HttpPost("addImages")]
+        public async Task<IActionResult> PostAddImagesAsync(ImageDTO imageDTO)
+        {
+            var response = await _productsUnitOfWork.AddImageAsync(imageDTO);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest(response.Message);
+        }
+
+        [HttpPost("removeLastImage")]
+        public async Task<IActionResult> PostRemoveLastImagesAsync(ImageDTO imageDTO)
+        {
+            var response = await _productsUnitOfWork.RemoveLastImageAsync(imageDTO);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest(response.Message);
+        }
+
         [HttpGet]
         public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
@@ -34,10 +56,10 @@ namespace Orders.BackEnd.Controllers
         [HttpGet("totalPages")]
         public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
         {
-            var action = await _productsUnitOfWork.GetTotalPagesAsync(pagination);
-            if (action.WasSuccess)
+            var response = await _productsUnitOfWork.GetTotalPagesAsync(pagination);
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
 
             return BadRequest();
@@ -46,34 +68,34 @@ namespace Orders.BackEnd.Controllers
         [HttpGet("{id}")]
         public override async Task<IActionResult> GetAsync(int id)
         {
-            var action = await _productsUnitOfWork.GetAsync(id);
-            if (action.WasSuccess)
+            var response = await _productsUnitOfWork.GetAsync(id);
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
-            return NotFound(action.Message);
+            return NotFound(response.Message);
         }
 
         [HttpPost("full")]
         public async Task<IActionResult> PostFullAsync(ProductDTO productDTO)
         {
-            var action = await _productsUnitOfWork.AddFullAsync(productDTO);
-            if (action.WasSuccess)
+            var response = await _productsUnitOfWork.AddFullAsync(productDTO);
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
-            return NotFound(action.Message);
+            return NotFound(response.Message);
         }
 
         [HttpPut("full")]
         public async Task<IActionResult> PutFullAsync(ProductDTO productDTO)
         {
-            var action = await _productsUnitOfWork.UpdateFullAsync(productDTO);
-            if (action.WasSuccess)
+            var response = await _productsUnitOfWork.UpdateFullAsync(productDTO);
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
-            return NotFound(action.Message);
+            return NotFound(response.Message);
         }
     }
 }

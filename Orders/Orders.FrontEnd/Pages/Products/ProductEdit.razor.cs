@@ -35,10 +35,66 @@ namespace Orders.FrontEnd.Pages.Products
 
         private async Task AddImageAsync()
         {
+            if(productDTO.ProductImages is null || productDTO.ProductImages.Count == 0)
+            {
+                return;
+            }
+
+            var imageDto = new ImageDTO
+            {
+                ProductId = ProductId,
+                Images = productDTO.ProductImages
+            };
+
+            var htppResponse = await Repository.PostAsync<ImageDTO, ImageDTO>("api/products/addImages", imageDto);
+            if(htppResponse.Error)
+            {
+                var message = await htppResponse.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            productDTO.ProductImages = htppResponse.Response!.Images;
+            var toast = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+            });
+            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Imagenes agregadas con éxito.");
         }
 
         private async Task RemoveImageAsync()
         {
+            if(productDTO.ProductImages is null || productDTO.ProductImages.Count == 0)
+            {
+                return;
+            }
+
+            var imageDto = new ImageDTO
+            {
+                ProductId = ProductId,
+                Images = productDTO.ProductImages
+            };
+
+            var httpResponse = await Repository.PostAsync<ImageDTO, ImageDTO>("api/v1/products/removeLastImage", imageDto);
+            if(httpResponse.Error)
+            {
+                var message = await httpResponse.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            productDTO.ProductImages = httpResponse.Response!.Images;
+            var toast = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+            });
+            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Imagén eliminada con éxito.");
         }
 
         private async Task LoadProductAsync()

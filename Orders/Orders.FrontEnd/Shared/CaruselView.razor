@@ -7,11 +7,14 @@
                  TData="object">
         @foreach (var image in Images)
         {
-            <MudCarouselItem Transition="transition" Color="@Color.Primary">
-                <div class="d-flex mudCaruselIten">
-                    <img src="@image" />
-                </div>
-            </MudCarouselItem>
+            @if (image.StartsWith("https://"))
+            {
+                <MudCarouselItem Transition="transition" Color="@Color.Primary">
+                    <div class="d-flex mudCaruselIten">
+                        <img src="@image" />
+                    </div>
+                </MudCarouselItem>
+            }
         }
     </MudCarousel>
 </div>
