@@ -1,0 +1,17 @@
+﻿<div class="my-2">
+    <MudCarousel Class="mud-with-full mudCarusel"
+                 ShowArrows="@arrows"
+                 ShowBullets="@bullets"
+                 EnableSwipeGesture="@enableSwipeGesture"
+                 AutoCycle="@autocycle"
+                 TData="object">
+        @foreach (var image in Images)
+        {
+            <MudCarouselItem Transition="transition" Color="@Color.Primary">
+                <div class="d-flex mudCaruselIten">
+                    <img src="@image" />
+                </div>
+            </MudCarouselItem>
+        }
+    </MudCarousel>
+</div>
