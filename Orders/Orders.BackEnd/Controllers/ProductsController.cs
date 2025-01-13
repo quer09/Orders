@@ -19,6 +19,17 @@ namespace Orders.BackEnd.Controllers
             _productsUnitOfWork = productsUnitOfWork;
         }
 
+        [HttpDelete]
+        public override async Task<IActionResult> DeleteAsync(int id)
+        {
+            var response = await _productsUnitOfWork.DeleteAsync(id);
+            if (!response.WasSuccess)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
         [HttpPost("addImages")]
         public async Task<IActionResult> PostAddImagesAsync(ImageDTO imageDTO)
         {

@@ -141,7 +141,15 @@ namespace Orders.FrontEnd.Pages.Products
                 return;
             }
 
-            await LoadAsync(1);
+            await LoadAsync();
+            var toast = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+            });
+            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro borrado con éxito");
         }
 
         private async Task ApplyFilterAsync()
