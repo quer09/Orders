@@ -1,12 +1,38 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@if (Products is null)
+{
+    <Loading />
+}
+else
+{
+    <Filter PlaceHolder="Buscar prodycto..." Callback="@FilterCallBack" />
 
-<AuthorizeView Roles="Admin">
-    <Authorized>
-        <p>Estas authenticado y authorizado, @context.User.Identity?.Name</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>No estas autorizado</p>
-    </NotAuthorized>
-</AuthorizeView>
+    <Pagination CurrentPage="currentPage"
+                TotalPages="totalPages"
+                SelectedPage="SelectedPageAsync"
+                RecordsNumber="SelectRecordsNumberAsync"
+                IsHome />
+
+    <div class="row row-cols-1 row-cols-md-4 g-4 mt-1">
+        @foreach (var prodct in Products!)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="text-center zoom">
+                        <img src="@prodct.MainImage" class="homeImage text-center" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-navy"> @prodct.Name</h5>
+                        <p class="card-text smfnt">@prodct.Description</p>
+                        <h5 class="text-muted">@($"{prodct.Price: C2}")</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/products/details/product/@prodct.Id" class="btn btn-sm btn-secundary"><i class="bi bi-info-circle" /> Detalles</a>
+                        <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(prodct.Id))><i class="bi bi-cart-plus" /> Agregar al Carro</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

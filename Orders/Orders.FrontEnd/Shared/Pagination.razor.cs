@@ -11,6 +11,7 @@ namespace Orders.FrontEnd.Shared
         [Parameter] public int CurrentPage { get; set; } = 1;
         [Parameter] public int TotalPages { get; set; } = 1;
         [Parameter] public int Radio { get; set; } = 10;
+        [Parameter] public bool IsHome { get; set; } = false;
         [Parameter] public EventCallback<int> SelectedPage { get; set; }
         [Parameter] public EventCallback<int> RecordsNumber { get; set; }
 
@@ -79,18 +80,31 @@ namespace Orders.FrontEnd.Shared
 
         private void BuildOptions()
         {
-            options =
-            [
-                new OptionModel { Value = 10, Name = "10" },
-                new OptionModel { Value = 25, Name = "25" },
-                new OptionModel { Value = 50, Name = "50" },
-                new OptionModel { Value = int.MaxValue, Name = "Todos" },
-            ];
+            if (IsHome)
+            {
+                options =
+                [
+                    new OptionModel { Value = 10, Name = "8" },
+                    new OptionModel { Value = 25, Name = "16" },
+                    new OptionModel { Value = 50, Name = "32" },
+                    new OptionModel { Value = int.MaxValue, Name = "Todos" },
+                ];
+            }
+            else
+            {
+                options =
+                [
+                    new OptionModel { Value = 10, Name = "10" },
+                    new OptionModel { Value = 25, Name = "25" },
+                    new OptionModel { Value = 50, Name = "50" },
+                    new OptionModel { Value = int.MaxValue, Name = "Todos" },
+                ];
+            }
         }
 
-    private async Task InternalRecordsNumberSelect(ChangeEventArgs e)
+        private async Task InternalRecordsNumberSelect(ChangeEventArgs e)
         {
-            if(e.Value != null)
+            if (e.Value != null)
             {
                 selectedOptionValue = Convert.ToInt32(e.Value.ToString());
             }

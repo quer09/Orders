@@ -52,6 +52,7 @@ namespace Orders.BackEnd.Controllers
             return BadRequest(response.Message);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
@@ -64,6 +65,7 @@ namespace Orders.BackEnd.Controllers
             return BadRequest();
         }
 
+        [AllowAnonymous]
         [HttpGet("totalPages")]
         public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
         {
@@ -76,6 +78,7 @@ namespace Orders.BackEnd.Controllers
             return BadRequest();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public override async Task<IActionResult> GetAsync(int id)
         {
