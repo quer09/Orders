@@ -30,7 +30,7 @@ namespace Orders.FrontEnd.Pages.Auth
             {
                 Toast = true,
                 Position = SweetAlertPosition.BottomEnd,
-                ShowCancelButton = true,
+                ShowConfirmButton = true,
                 Timer = 3000
             });
             await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Contraseña cambiada con éxito.");

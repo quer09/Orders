@@ -18,6 +18,33 @@ namespace Orders.BackEnd.Repositories.Implementations
             _usersRepository = usersRepository;
         }
 
+        public override async Task<ActionResponse<TemporalOrder>> GetAsync(int id)
+        {
+            var temporalOrder = await _context.TemporalOrders
+                .Include(to => to.User!)
+                .Include(to => to.Product!)
+                .ThenInclude(p => p.ProductCategories!)
+                .ThenInclude(pc => pc.Category)
+                .Include(to => to.Product!)
+                .ThenInclude(p => p.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (temporalOrder == null)
+            {
+                return new ActionResponse<TemporalOrder>
+                {
+                    WasSuccess = false,
+                    Message = "Registro no encontrado"
+                };
+            }
+
+            return new ActionResponse<TemporalOrder>
+            {
+                WasSuccess = true,
+                Result = temporalOrder
+            };
+        }
+
         public async Task<ActionResponse<TemporalOrderDTO>> AddFullAsync(string email, TemporalOrderDTO temporalOrderDTO)
         {
             var product = await _context.Products
@@ -97,6 +124,31 @@ namespace Orders.BackEnd.Repositories.Implementations
             {
                 WasSuccess = true,
                 Result = (int)count
+            };
+        }
+
+        public async Task<ActionResponse<TemporalOrder>> PutFullAsync(TemporalOrderDTO temporalOrderDTO)
+        {
+            var curretTemporalOrder = await _context.TemporalOrders
+                .FirstOrDefaultAsync(x => x.Id == temporalOrderDTO.Id);
+            if (curretTemporalOrder == null)
+            {
+                return new ActionResponse<TemporalOrder>
+                {
+                    WasSuccess = false,
+                    Message = "Registro no encontrado"
+                };
+            }
+
+            curretTemporalOrder.Remarks = temporalOrderDTO.Remarks;
+            curretTemporalOrder.Quantity = temporalOrderDTO.Quantity;
+
+            _context.Update(curretTemporalOrder);
+            await _context.SaveChangesAsync();
+            return new ActionResponse<TemporalOrder>
+            {
+                WasSuccess = true,
+                Result = curretTemporalOrder
             };
         }
     }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Content Remove="Pages\Auth\ChangePassword.razor" />
+    <Content Remove="Pages\Cart\ModifyTemporalOrder.razor" />
     <Content Remove="Pages\Products\ProductCreate.razor" />
   </ItemGroup>
 
@@ -31,16 +32,22 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Auth\ChangePassword.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Cart\ModifyTemporalOrder.razor" />
     <_ContentIncludedByDefault Remove="Pages\Products\ProductCreate.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Pages\Auth\ChangePassword.razor" />
+    <None Include="Pages\Cart\ModifyTemporalOrder.razor" />
     <None Include="Pages\Products\ProductCreate.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Pages\Products\ProductCreate.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Cart\ModifyTemporalOrder.razor" />
   </ItemGroup>
 
 </Project>

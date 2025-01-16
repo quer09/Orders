@@ -198,7 +198,7 @@ namespace Orders.FrontEnd.Pages.States
             {
                 Toast = true,
                 Position = SweetAlertPosition.BottomEnd,
-                ShowCancelButton = true,
+                ShowConfirmButton = true,
                 Timer = 3000
             });
             await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro borrado con éxito");
