@@ -8,10 +8,16 @@ namespace Orders.BackEnd.UnitsOfWork.Implementations
     public class GenericUnitOfWork<T> : IGenericUnitOfWork<T> where T : class
     {
         private readonly IGenericRepository<T> _repository;
+        private ITemporalOrdersUnitOfWork temporalOrdersUnitOfWork;
 
         public GenericUnitOfWork(IGenericRepository<T> repository)
         {
             _repository = repository;
+        }
+
+        public GenericUnitOfWork(ITemporalOrdersUnitOfWork temporalOrdersUnitOfWork)
+        {
+            this.temporalOrdersUnitOfWork = temporalOrdersUnitOfWork;
         }
 
         public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination) => await _repository.GetAsync(pagination);
