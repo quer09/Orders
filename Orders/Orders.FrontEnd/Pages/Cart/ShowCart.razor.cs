@@ -38,9 +38,31 @@ namespace Orders.FrontEnd.Pages.Cart
             }
         }
 
-        private void ConfirmOrderAsync()
+        private async Task ConfirmOrderAsync()
         {
-            //TODO: Pending to implement
+            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres confirmar su pedido?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+            var confirm = string.IsNullOrEmpty(result.Value);
+            if (confirm)
+            {
+                return;
+            }
+
+            var responseHttp = await Repository.PostAsync("api/v1/orders", OrderDTO);
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            NavigationManager.NavigateTo("/Cart/OrderConfirmed");
         }
 
         private async Task Delete(int temporalOrderId)
