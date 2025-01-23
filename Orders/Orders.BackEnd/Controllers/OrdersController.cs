@@ -21,6 +21,17 @@ namespace Orders.BackEnd.Controllers
             _ordersUnitOfWork = ordersUnitOfWork;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(int id)
+        {
+            var response = await _ordersUnitOfWork.GetAsync(id);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return NotFound(response.Message);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAsyn([FromQuery] PaginationDTO pagination)
         {
@@ -52,6 +63,17 @@ namespace Orders.BackEnd.Controllers
                 return NoContent();
             }
 
+            return BadRequest(response.Message);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> PutAsyn(OrderDTO orderDTO)
+        {
+            var response = await _ordersUnitOfWork.UpdateFullAsync(User.Identity!.Name!, orderDTO);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
             return BadRequest(response.Message);
         }
     }
