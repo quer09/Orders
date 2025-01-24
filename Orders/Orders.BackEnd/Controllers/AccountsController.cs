@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Orders.BackEnd.Helpers;
+using Orders.BackEnd.Repositories.Interfaces;
 using Orders.BackEnd.UnitsOfWork.Interfaces;
 using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
@@ -30,6 +31,28 @@ namespace Orders.BackEnd.Controllers
             _fileStorage = fileStorage;
             _mailHelper = mailHelper;
             _container = "users";
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _usersUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalPages")]
+        public async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _usersUnitOfWork.GetTotalPagesAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
 
         [HttpPost("RecoverPassword")]

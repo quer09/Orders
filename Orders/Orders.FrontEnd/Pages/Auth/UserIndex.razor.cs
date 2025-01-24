@@ -3,32 +3,28 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Orders.FrontEnd.Repositories;
 using Orders.Shared.Entities;
-using System.Net;
 
-namespace Orders.FrontEnd.Pages.Products
+namespace Orders.FrontEnd.Pages.Auth
 {
     [Authorize(Roles = "Admin")]
-    public partial class ProductsIndex
+    public partial class UserIndex
     {
         private int currentPage = 1;
         private int totalPages;
 
-        [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-        [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
-
-        public List<Product>? Products { get; set; }
-
+        [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Parameter, SupplyParameterFromQuery] public string Page { get; set; } = string.Empty;
         [Parameter, SupplyParameterFromQuery] public string Filter { get; set; } = string.Empty;
         [Parameter, SupplyParameterFromQuery] public int RecordsNumber { get; set; } = 10;
+        public List<User>? Users { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
             await LoadAsync();
         }
 
-        private async Task SelectRecordsNumberAsync(int recordsnumber)
+        private async Task SelectedRecordsNumberAsync(int recordsnumber)
         {
             RecordsNumber = recordsnumber;
             int page = 1;
@@ -74,89 +70,45 @@ namespace Orders.FrontEnd.Pages.Products
         private async Task<bool> LoadListAsync(int page)
         {
             ValidateRecordsNumber(RecordsNumber);
-            var url = $"api/v1/products?page={page}&recordsnumber={RecordsNumber}";
-            if (!string.IsNullOrEmpty(Filter))
+            var url = $"api/v1/accounts/all?page={page}&recordsnumber={RecordsNumber}";
+            if (!string.IsNullOrWhiteSpace(Filter))
             {
                 url += $"&filter={Filter}";
             }
 
-            var response = await Repository.GetAsync<List<Product>>(url);
-            if (response.Error)
+            var responseHttp = await Repository.GetAsync<List<User>>(url);
+            if (responseHttp.Error)
             {
-                var message = await response.GetErrorMessageAsync();
+                var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return false;
             }
-            Products = response.Response;
+            Users = responseHttp.Response;
             return true;
         }
 
         private async Task LoadPagesAsync()
         {
             ValidateRecordsNumber(RecordsNumber);
-            var url = $"api/v1/products/totalPages?recordsnumber={RecordsNumber}";
-            if (string.IsNullOrEmpty(Filter))
+            var url = $"api/v1/accounts/totalPages?recordsnumber={RecordsNumber}";
+            if (!string.IsNullOrWhiteSpace(Filter))
             {
                 url += $"&filter={Filter}";
             }
 
-            var response = await Repository.GetAsync<int>(url);
-            if (response.Error)
-            {
-                var message = await response.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-                return;
-            }
-            totalPages = response.Response;
-        }
-
-        private async Task Delete(int productId)
-        {
-            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
-            {
-                Title = "Confimación",
-                Text = "¿Esta seguro que quieres borrar el registro?",
-                Icon = SweetAlertIcon.Question,
-                ShowCancelButton = true
-            });
-            var confirm = string.IsNullOrEmpty(result.Value);
-
-            if (confirm)
-            {
-                return;
-            }
-
-            var responseHttp = await Repository.DeleteAsync<Product>($"api/v1/products/{productId}");
-
+            var responseHttp = await Repository.GetAsync<int>(url);
             if (responseHttp.Error)
             {
-                if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-                {
-                    NavigationManager.NavigateTo("/");
-                    return;
-                }
-
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-
-            await LoadAsync();
-            var toast = SweetAlertService.Mixin(new SweetAlertOptions
-            {
-                Toast = true,
-                Position = SweetAlertPosition.BottomEnd,
-                ShowConfirmButton = true,
-                Timer = 3000
-            });
-            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro borrado con éxito");
+            totalPages = responseHttp.Response;
         }
 
         private async Task ApplyFilterAsync()
         {
-            int page = 1;
-            await LoadAsync(page);
-            await SelectedPageAsync(page);
+            await LoadAsync();
         }
     }
 }

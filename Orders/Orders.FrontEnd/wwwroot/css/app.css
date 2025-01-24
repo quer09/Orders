@@ -188,3 +188,7 @@ code {
     height: 100%;
     justify-content: center;
 }
+
+.userImage {
+    border-radius: 50%;
+}

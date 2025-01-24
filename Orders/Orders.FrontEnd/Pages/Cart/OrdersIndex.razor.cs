@@ -23,9 +23,9 @@ namespace Orders.FrontEnd.Pages.Cart
             await LoadAsync();
         }
 
-        private async Task SelectRecordsNumberAsync(int recordsNumber)
+        private async Task SelectRecordsNumberAsync(int recordsnumber)
         {
-            RecordsNumber = recordsNumber;
+            RecordsNumber = recordsnumber;
             int page = 1;
             await LoadAsync(page);
             await SelectedPageAsync(page);
@@ -51,9 +51,9 @@ namespace Orders.FrontEnd.Pages.Cart
             }
         }
 
-        private void ValidateRecordsNumber(int recordsNumber)
+        private void ValidateRecordsNumber(int recordsnumber)
         {
-            if (recordsNumber == 0)
+            if (recordsnumber == 0)
             {
                 RecordsNumber = 10;
             }

@@ -3,6 +3,7 @@ using Orders.BackEnd.Repositories.Interfaces;
 using Orders.BackEnd.UnitsOfWork.Interfaces;
 using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
+using Orders.Shared.Responses;
 
 namespace Orders.BackEnd.UnitsOfWork.Implementations
 {
@@ -42,5 +43,9 @@ namespace Orders.BackEnd.UnitsOfWork.Implementations
         public async Task<SignInResult> LoginAsync(LoginDTO model) => await _userRepository.LoginAsync(model);
 
         public async Task LogoutAsync() => await _userRepository.LogoutAsync();
+
+        public async Task<ActionResponse<IEnumerable<User>>> GetAsync(PaginationDTO pagination) => await _userRepository.GetAsync(pagination);
+
+        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination) => await _userRepository.GetTotalPagesAsync(pagination);
     }
 }

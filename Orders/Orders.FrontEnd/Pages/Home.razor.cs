@@ -58,9 +58,9 @@ namespace Orders.FrontEnd.Pages
             counter = responseHtpp.Response;
         }
 
-        private async Task SelectRecordsNumberAsync(int recordsNumber)
+        private async Task SelectRecordsNumberAsync(int recordsnumber)
         {
-            RecordsNumber = recordsNumber;
+            RecordsNumber = recordsnumber;
             int page = 1;
             await LoadAsync(page);
             await SelectedPageAsync(page);
@@ -86,9 +86,9 @@ namespace Orders.FrontEnd.Pages
             }
         }
 
-        private void ValidateRecordsNumber(int recordsNumber)
+        private void ValidateRecordsNumber(int recordsnumber)
         {
-            if (recordsNumber == 0)
+            if (recordsnumber == 0)
             {
                 RecordsNumber = 8;
             }
