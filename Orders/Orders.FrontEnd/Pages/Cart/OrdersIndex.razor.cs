@@ -6,7 +6,7 @@ using Orders.Shared.Entities;
 
 namespace Orders.FrontEnd.Pages.Cart
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, User")]
     public partial class OrdersIndex
     {
         private int currentPage = 1;
