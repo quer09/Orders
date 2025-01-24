@@ -8,6 +8,8 @@ namespace Orders.BackEnd.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
+            //Timeout for the BD Default is: 30
+            Database.SetCommandTimeout(600);
         }
 
         public DbSet<City> Cities { get; set; }

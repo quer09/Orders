@@ -3,6 +3,7 @@ using Orders.BackEnd.Helpers;
 using Orders.BackEnd.UnitsOfWork.Interfaces;
 using Orders.Shared.Entities;
 using Orders.Shared.Enums;
+using System.Runtime.InteropServices;
 
 namespace Orders.BackEnd.Data
 {
@@ -94,7 +95,15 @@ namespace Orders.BackEnd.Data
 
             foreach (string? image in images)
             {
-                var filePath = $"{Environment.CurrentDirectory}\\Images\\products\\{image}";
+                string filePath;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    filePath = $"{Environment.CurrentDirectory}\\Images\\products\\{image}";
+                }
+                else
+                {
+                    filePath = $"{Environment.CurrentDirectory}/Images/products/{image}";
+                }
                 var fileBytes = File.ReadAllBytes(filePath);
                 var imagePath = await _fileStorage.SaveFileAsync(fileBytes, "jpg", "products");
                 product.ProductImages.Add(new ProductImage { Image = imagePath });
@@ -107,7 +116,16 @@ namespace Orders.BackEnd.Data
         {
             if (!_context.Countries.Any())
             {
-                var contriesStatesCitiesSQLScript = File.ReadAllText("Data\\CountriesStatesCities.sql");
+                string contriesStatesCitiesSQLScript;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    contriesStatesCitiesSQLScript = File.ReadAllText("Data\\CountriesStatesCities.sql");
+                }
+                else
+                {
+                    contriesStatesCitiesSQLScript = File.ReadAllText("Data/CountriesStatesCities.sql");
+                }
+
                 await _context.Database.ExecuteSqlRawAsync(contriesStatesCitiesSQLScript);
             }
         }
@@ -219,7 +237,16 @@ namespace Orders.BackEnd.Data
                 var city = await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Grecia");
                 city ??= await _context.Cities.FirstOrDefaultAsync();
 
-                var filePath = $"{Environment.CurrentDirectory}\\Images\\users\\{image}";
+                string filePath;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    filePath = $"{Environment.CurrentDirectory}\\Images\\users\\{image}";
+                }
+                else
+                {
+                    filePath = $"{Environment.CurrentDirectory}/Images/users/{image}";
+                }
+
                 var fileBytes = File.ReadAllBytes(filePath);
                 var imagePath = await _fileStorage.SaveFileAsync(fileBytes, "jpg", "users");
 
@@ -234,7 +261,7 @@ namespace Orders.BackEnd.Data
                     Document = document,
                     City = city,
                     UserType = userType,
-                    Photo= imagePath
+                    Photo = imagePath
                 };
 
                 await _usersUnitOfWork.AddUserAsync(user, "123456");

@@ -23,3 +23,11 @@
     height: 150px;
     max-width: 200px;
 }
+
+.homeButton {
+    cursor: pointer;
+}
+
+.homeFilter {
+    height: 30vh;
+}
